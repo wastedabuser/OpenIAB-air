@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extension xmlns="http://ns.adobe.com/air/extension/3.9">
+    <id>com.eldhelm.openiab.InAppPurchase</id>
+    <versionNumber>1.0.0</versionNumber>
+    <platforms>
+        <platform name="Android-ARM">
+            <applicationDeployment>
+                <nativeLibrary>InAppPurchase.jar</nativeLibrary>
+				<initializer>com.eldhelm.openiab.InAppPurchase</initializer>
+				<finalizer>com.eldhelm.openiab.InAppPurchase</finalizer>
+            </applicationDeployment>
+        </platform>
+        <platform name="default">
+            <applicationDeployment/>
+		</platform>	
+	</platforms>
+</extension>

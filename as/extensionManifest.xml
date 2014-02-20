@@ -1,0 +1,4 @@
+<?xml version="1.0"?> 
+<componentPackage> 
+    <component id="InAppPurchase" 		class="com.eldhelm.openiab.InAppPurchase"/>
+</componentPackage>
