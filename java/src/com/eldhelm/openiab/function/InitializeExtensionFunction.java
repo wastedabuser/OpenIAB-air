@@ -13,8 +13,8 @@ public class InitializeExtensionFunction implements FREFunction {
 		
 		try {
 			frecontext.developmentMode = arg1[0].getAsBool();
-			frecontext.base64EncodedPublicKey = arg1[1].getAsString();
-			frecontext.YANDEX_PUBLIC_KEY = arg1[2].getAsString();
+			if (arg1[1] != null) frecontext.base64EncodedPublicKey = arg1[1].getAsString();
+			if (arg1[2] != null) frecontext.YANDEX_PUBLIC_KEY = arg1[2].getAsString();
 		} catch(Exception e) {
 			frecontext.sendException(e);
 		}

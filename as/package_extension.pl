@@ -28,6 +28,7 @@ my @commands = (
 		-source-path src
 		-namespace com.eldhelm.openiab extensionManifest.xml
 		-include-namespaces com.eldhelm.openiab
+		-swf-version=23
 		-output $swc
 	~,
 
@@ -43,7 +44,7 @@ my @commands = (
 		-package
 		-target ane $ane extension.xml 
 		-swc $swc
-	~.join(" ", map qq~-platform $_ ~.(-d "../platform/$_/res" ? "-platformoptions platform$_.xml ":"").qq~-C ../platform/$_ .~, @platfroms),
+	~.join(" ", map qq~-platform $_ ~.(-f "platform$_.xml" ? "-platformoptions platform$_.xml ":"").qq~-C ../platform/$_ .~, @platfroms),
 
 	-d $productionPath ? (
 		qq~copy "$swc" "$productionPath/lib" /y~,

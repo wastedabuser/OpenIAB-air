@@ -3,10 +3,13 @@ package com.eldhelm.openiab;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.onepf.oms.Appstore;
 import org.onepf.oms.OpenIabHelper;
+import org.onepf.oms.OpenIabHelper.Options;
 import org.onepf.oms.appstore.googleUtils.IabHelper;
 import org.onepf.oms.appstore.googleUtils.IabResult;
 import org.onepf.oms.appstore.googleUtils.Inventory;
@@ -24,38 +27,34 @@ public class InAppExtensionContext extends FREContext {
 	public static final String CONSUMABLE = "consumable";
 	static final int RC_REQUEST = 10001;
 	
-	public boolean developmentMode = false;
-	public String base64EncodedPublicKey = "CONSTRUCT_YOUR_KEY_AND_PLACE_IT_HERE";
-    public String YANDEX_PUBLIC_KEY = "PLACE_HERE_YANDEX_KEY";
+	public boolean developmentMode;
+	public String base64EncodedPublicKey;
+    public String YANDEX_PUBLIC_KEY;
 	public Map<String, String> productTypes = new HashMap<String, String>();
     
-    private OpenIabHelper mHelper;    
-    private boolean setupDone = false;
+    private OpenIabHelper mHelper;
 	
 	public void init() {
+        sendWarning("init.");
+        
         Map<String, String> storeKeys = new HashMap<String, String>();
-        storeKeys.put(OpenIabHelper.NAME_GOOGLE, base64EncodedPublicKey);
+        if (base64EncodedPublicKey != null) storeKeys.put(OpenIabHelper.NAME_GOOGLE, base64EncodedPublicKey);
         // storeKeys.put(OpenIabHelper.NAME_AMAZON, "Unavailable. Amazon doesn't support RSA verification. So this mapping is not needed");
         // storeKeys.put(OpenIabHelper.NAME_SAMSUNG,"Unavailable. SamsungApps doesn't support RSA verification. So this mapping is not needed");
-        storeKeys.put("com.yandex.store", YANDEX_PUBLIC_KEY);
-
-        mHelper = new OpenIabHelper(getActivity(), storeKeys);
+        if (YANDEX_PUBLIC_KEY != null) storeKeys.put("com.yandex.store", YANDEX_PUBLIC_KEY);
         
-        // enable debug logging (for a production application, you should set this to false).
-        // mHelper.enableDebugLogging(developmentMode);
-
+        mHelper = new OpenIabHelper(getActivity(), storeKeys);
         sendWarning("Starting setup.");
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
             	sendWarning("Setup finished.");
 
                 if (!result.isSuccess()) {
-                    sendError("Problem setting up in-app billing: " + result);
+                	initFailed("Problem setting up in-app billing: " + result);
                     return;
                 }
 
                 sendWarning("Setup successful. Querying inventory.");
-                setupDone = true;
                 mHelper.queryInventoryAsync(mGotInventoryListener);
             }
         });
@@ -65,16 +64,16 @@ public class InAppExtensionContext extends FREContext {
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
         	sendWarning("Query inventory finished.");
             if (result.isFailure()) {
-            	sendError("Failed to query inventory: " + result);
+            	initFailed("Failed to query inventory: " + result);
                 return;
             }
 
             sendWarning("Query inventory was successful.");
             /*
-             * TODO: Implement some stuff for non consumables here 
+             * TODO: Implement some stuff for non-consumables here 
             */
             
-            initialized();
+            initSuccessful();
         }
     };
 
@@ -114,8 +113,18 @@ public class InAppExtensionContext extends FREContext {
         }
     };
     
-    public void initialized() {
-    	dispatchStatusEventAsync("{}", "initialized");
+    public void initSuccessful() {
+    	dispatchStatusEventAsync("{}", "init_successful");
+    }
+    
+    public void initFailed(String message) {
+    	JSONObject json = new JSONObject();
+    	try {
+	    	json.put("message", message);
+    	} catch(Exception e) {
+    		sendException(e);
+    	}
+    	dispatchStatusEventAsync(json.toString(), "init_failed");
     }
     
     public void purchaseFailed(String sku, String message) {

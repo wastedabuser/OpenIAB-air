@@ -6,9 +6,10 @@ package com.eldhelm.openiab {
 	 */
 	public class IapEvent extends Event {
 		
-		public static const INITIALIZED:String = "iapEvent_initialized";
-		public static const PURCHASE_FAILED:String = "iapEvent_purchase_failed";
+		public static const INIT_SUCCESSFUL:String = "iapEvent_init_successful";
+		public static const INIT_FAILED:String = "iapEvent_init_failed";
 		public static const PURCHASE_SUCCESSFUL:String = "iapEvent_purchase_successful";
+		public static const PURCHASE_FAILED:String = "iapEvent_purchase_failed";
 		
 		/**
 		 * Fires when an error occures while interacting with the api

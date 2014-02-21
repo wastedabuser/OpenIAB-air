@@ -28,15 +28,20 @@ public class MapSkuFunction implements FREFunction {
 		}		
 		frecontext.sendWarning("Maping sku:" + sku + "; vendor:"+vendor+"; externalSku:"+externalSku+"; type:"+type);
 		
-		String vndr = "com.yandex.store";
+		String vndr = null;
 		if (vendor == "amazon") vndr = OpenIabHelper.NAME_AMAZON;
 		else if (vendor == "tstore") vndr = OpenIabHelper.NAME_TSTORE;
 		else if (vendor == "samsung") vndr = OpenIabHelper.NAME_SAMSUNG;
 		else if (vendor == "google") vndr = OpenIabHelper.NAME_GOOGLE;
-
-        OpenIabHelper.mapSku(sku, vndr, externalSku);
+		else if (vendor == "yandex") vndr = "com.yandex.store";
 		
-        if (type != "") frecontext.productTypes.put(sku, type);
+		if (vendor == null) {
+			frecontext.sendError("No vendor specified for sku mapping");
+			return null;
+		}
+		
+        OpenIabHelper.mapSku(sku, vndr, externalSku);
+        if (type.equals(InAppExtensionContext.CONSUMABLE)) frecontext.productTypes.put(sku, type);
         
 		return null;
 	}

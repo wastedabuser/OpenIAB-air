@@ -20,6 +20,7 @@ package com.eldhelm.openiab {
 		
 		private var extContext:ExtensionContext;
 		
+		public var initialized:Boolean;
 		public var develompentMode:Boolean;
 		public var base64EncodedPublicKey:String;
 		public var yandexPublicKey:String;
@@ -44,8 +45,9 @@ package com.eldhelm.openiab {
 		}
 		
 		private function onStatus(event:StatusEvent):void {		
-			if (event.level == "initialized" || event.level == "purchase_failed" || event.level == "purchase_successful") {
+			if (event.level == "init_successful" || event.level == "init_failed" || event.level == "purchase_failed" || event.level == "purchase_successful") {
 				trace("IAP Extension: " + event.level + ": " + event.code);
+				if (event.level == "init_successful") initialized = true;
 				dispatchEvent(new IapEvent("iapEvent_" + event.level, JSON.parse(event.code) ));
 				return;
 				
@@ -83,7 +85,7 @@ package com.eldhelm.openiab {
 		 * @param	type
 		 */
 		public function mapSku(sku:String, vendor:String, vendorSku:String, type:String):void {
-			if (!extContext) return;
+			if (!extContext|| !initialized) return;
 			
 			trace("IAP: execute mapSku");
 			extContext.call("mapSku", sku, vendor, vendorSku, type);
@@ -94,7 +96,7 @@ package com.eldhelm.openiab {
 		 * @param	sku
 		 */
 		public function purchase(sku:String, payload:String):void {
-			if (!extContext) return;
+			if (!extContext|| !initialized) return;
 			
 			trace("IAP: execute purchase");
 			extContext.call("purchase", sku, payload);
