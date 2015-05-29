@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<platform xmlns="http://ns.adobe.com/air/extension/4.0">
+<platform xmlns="http://ns.adobe.com/air/extension/17.0">
 	<packagedDependencies> 
 		<packagedDependency>openiab.jar</packagedDependency>
 		<packagedDependency>gson-2.2.2.jar</packagedDependency> 
@@ -9,7 +9,7 @@
 	<packagedResources> 
 		<packagedResource> 
 			<packageName>com.eldhelm.openiab</packageName> 
-			<folderName>res</folderName> 
+			<folderName>openiab-res</folderName> 
 		</packagedResource> 
 	</packagedResources> 
 </platform>

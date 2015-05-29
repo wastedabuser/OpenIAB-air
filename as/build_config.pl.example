@@ -1,0 +1,12 @@
+(
+
+#flexSdkPath
+"D:/programs/FlashDevelop/Apps/ascsdk/17.0.0",
+
+#zipPath7z
+"C:/Program Files/7-Zip",
+
+#production_path
+"D:/projects/card_game/code/development/yandex",
+
+);

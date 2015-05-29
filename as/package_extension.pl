@@ -1,8 +1,12 @@
 use strict;
 
-my ($projectPath, $name, $sdkPath) = @ARGV;
+my ($projectPath, $name) = @ARGV;
 
-my $flexSdkPath = "C:/Program Files (x86)/FlashDevelop/Tools/flexsdk";
+die "build_config.pl not found" unless -f "build_config.pl";
+my ($flexSdkPath, $zipPath7z, $productionPath) = do "build_config.pl"; 
+
+die "Sdk path is not configured!" unless $flexSdkPath;
+die "7 zip path is not configured!" unless $zipPath7z;
 
 my $swc = "$projectPath\\..\\build\\$name.swc";
 my $ane = "$projectPath\\..\\build\\com.eldhelm.openiab.InAppPurchase.ane";
@@ -10,13 +14,6 @@ my $ane = "$projectPath\\..\\build\\com.eldhelm.openiab.InAppPurchase.ane";
 print "Cleaning up build directory\n";
 unlink $swc;
 unlink $ane;
-
-# ===========================================================================================
-# Well, this is configured for my enviroment so i can push the build to my production project
-# Change it if you are using another (but similar) setup
-# ===========================================================================================
-my $productionPath;
-$productionPath = do "production_path.pl" if -f "production_path.pl";
 
 opendir DIR, "../platform";
 my @platfroms = grep /^[^\.]/, readdir DIR;
@@ -32,7 +29,7 @@ my @commands = (
 		-output $swc
 	~,
 
-	map (qq~"C:/Program Files/7-Zip/7z" 
+	map (qq~"$zipPath7z/7z" 
 		e 
 		$swc
 		library.swf
@@ -40,14 +37,14 @@ my @commands = (
 		-y
 	~, @platfroms),
 
-	qq~"$sdkPath/bin/adt" 
+	qq~"$flexSdkPath/bin/adt" 
 		-package
 		-target ane $ane extension.xml 
 		-swc $swc
 	~.join(" ", map qq~-platform $_ ~.(-f "platform$_.xml" ? "-platformoptions platform$_.xml ":"").qq~-C ../platform/$_ .~, @platfroms),
 
 	-d $productionPath ? (
-		qq~copy "$swc" "$productionPath/lib" /y~,
+		# qq~copy "$swc" "$productionPath/lib" /y~,
 		qq~copy "$ane" "$productionPath/ane" /y~,
 	) : ()
 );

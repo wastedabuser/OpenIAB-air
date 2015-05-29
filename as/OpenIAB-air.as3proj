@@ -8,8 +8,8 @@
     <movie fps="30" />
     <movie width="480" />
     <movie height="762" />
-    <movie version="3" />
-    <movie minorVersion="9" />
+    <movie version="17" />
+    <movie minorVersion="0" />
     <movie platform="AIR Mobile" />
     <movie background="#FFFFFF" />
     <movie preferredSDK="Flex 4.6.0, AIR 4.0;4.6.0, 4.0;" />
@@ -82,7 +82,7 @@
   <!-- Executed before build -->
   <preBuildCommand />
   <!-- Executed after build -->
-  <postBuildCommand alwaysRun="False">perl $(ProjectDir)\package_extension.pl "$(ProjectDir)" "$(ProjectName)" "$(FlexSDK)"</postBuildCommand>
+  <postBuildCommand alwaysRun="False">perl $(ProjectDir)\package_extension.pl "$(ProjectDir)" "$(ProjectName)"</postBuildCommand>
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
